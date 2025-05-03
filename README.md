@@ -19,12 +19,11 @@
 4. Сравнить размеры полученных образов.
 5. Ответить на контрольные вопросы.
 6. Оформить подробный отчёт в виде `README.md`.
-
 ---
 
-## 🧪 Ход выполнения
+## Ход выполнения
 
-### 🔹 Шаг 1. Исходный образ — `mynginx:raw`
+### Шаг 1. Исходный образ — `mynginx:raw`
 
 Создаём необработанный Dockerfile (без оптимизаций):
 
@@ -36,16 +35,13 @@ RUN apt-get install -y nginx
 COPY site /var/www/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
-Сборка образа:
 
-bash
-📸 Скриншот 1: docker image build -t mynginx:raw
+```
 ![Снимок экрана 2025-05-03 194521](https://github.com/user-attachments/assets/0e7e6880-2c05-4d3e-9367-e3b2b12891eb)
-
+Скриншот 1: docker image build -t mynginx:raw
+```
 🔹 Шаг 2. Удаление временных файлов — mynginx:clean
-dockerfile
-Копировать
-Редактировать
+
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get upgrade -y
@@ -54,27 +50,20 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 COPY site /var/www/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
+```
 Сборка:
-
-bash
-Копировать
-Редактировать
-docker image build -t mynginx:clean -f Dockerfile.clean .
-📸 Скриншот 2: docker image build -t mynginx:clean
-
+![Снимок экрана 2025-05-03 195616](https://github.com/user-attachments/assets/524902ea-158e-498b-a197-3e4719011a6c)
+Скриншот 2: docker image build -t mynginx:clean
+```
 📝 Объяснение:
 Удаление временных файлов снижает размер образа за счёт исключения:
-
 кэша менеджера пакетов (/var/lib/apt/lists/),
-
 временных директорий (/tmp, /var/tmp),
-
 установочного мусора.
 
 🔹 Шаг 3. Объединение слоёв — mynginx:few
-dockerfile
-Копировать
-Редактировать
+
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get upgrade -y && \
@@ -83,21 +72,17 @@ RUN apt-get update && apt-get upgrade -y && \
 COPY site /var/www/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
+```
 Сборка:
-
-bash
-Копировать
-Редактировать
-docker image build -t mynginx:few -f Dockerfile.few .
-📸 Скриншот 3: docker image build -t mynginx:few
-
+![Снимок экрана 2025-05-03 200212](https://github.com/user-attachments/assets/c6e6c5eb-38d8-48ec-8b4f-7662e2de03be)
+Скриншот 3: docker image build -t mynginx:few
+```
 📝 Объяснение:
 Docker создаёт слой на каждый RUN, COPY, ADD, поэтому лучше объединять команды через &&. Это сокращает количество слоёв и уменьшает размер образа.
 
 🔹 Шаг 4. Минимальный базовый образ — mynginx:alpine
-dockerfile
-Копировать
-Редактировать
+
 FROM alpine:latest
 
 RUN apk update && apk upgrade
@@ -105,33 +90,32 @@ RUN apk add nginx
 COPY site /var/www/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
+```
 Сборка:
-
-bash
-Копировать
-Редактировать
-docker image build -t mynginx:alpine -f Dockerfile.alpine .
-📸 Скриншот 4: docker image build -t mynginx:alpine
-
+![Снимок экрана 2025-05-03 200643](https://github.com/user-attachments/assets/aa783831-7e71-483d-b1e3-e97f7dc98ac8)
+Скриншот 4: docker image build -t mynginx:alpine
+```
 📝 Объяснение:
 Alpine — минималистичная дистрибуция Linux (размером ~5 MB). Используя его, можно резко сократить размер образа без ущерба для функционала.
 
 🔹 Шаг 5. Перепаковка образа — mynginx:repack
-bash
-Копировать
-Редактировать
+
 docker container create --name mynginx mynginx:raw
 docker container export mynginx | docker image import - mynginx:repack
 docker container rm mynginx
-📸 Скриншот 5: docker export/import
+
+```
+![Снимок экрана 2025-05-03 201629](https://github.com/user-attachments/assets/c19daf1b-b10f-4787-9845-e6a25f1de70f)
+Скриншот 5: docker export/import
+```
 
 📝 Объяснение:
 Перепаковка экспортирует только файловую систему контейнера (без истории слоёв, метаданных, кэшей). Это позволяет значительно уменьшить итоговый размер образа.
 
 🔹 Шаг 6. Использование всех методов — mynginx:min (через промежуточный mynginx:minx)
-dockerfile
-Копировать
-Редактировать
+
+
 FROM alpine:latest
 
 RUN apk update && apk upgrade && \
@@ -141,17 +125,19 @@ RUN apk update && apk upgrade && \
 COPY site /var/www/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
-Сборка и перепаковка:
 
-bash
-Копировать
-Редактировать
+
+Сборка и перепаковка:
 docker image build -t mynginx:minx -f Dockerfile.min .
 docker container create --name mynginx mynginx:minx
 docker container export mynginx | docker image import - mynginx:min
 docker container rm mynginx
-📸 Скриншот 6: Сборка и перепаковка минимального образа
 
+```
+![Снимок экрана 2025-05-03 202158](https://github.com/user-attachments/assets/fbc611f3-222c-4e23-a85d-24e7ac229355)
+![Снимок экрана 2025-05-03 202226](https://github.com/user-attachments/assets/782c56cc-846d-47cd-b01f-095f86d33449)
+Скриншот 6: Сборка и перепаковка минимального образа
+```
 📊 Сравнение размеров
 Выполняем:
 
