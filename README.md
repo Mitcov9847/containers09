@@ -22,7 +22,6 @@
 ---
 
 📂 Структура репозитория
-
 ---
 containers09/
 ├── site/
@@ -34,8 +33,8 @@ containers09/
 ├── Dockerfile.alpine
 ├── Dockerfile.min
 └── README.md
-
 ---
+
 ## Ход выполнения
 
 ### Шаг 1. Исходный образ — `mynginx:raw`
