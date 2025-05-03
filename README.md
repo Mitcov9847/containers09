@@ -21,8 +21,12 @@
 6. Оформить подробный отчёт в виде `README.md`.
 ---
 
-📂 Структура репозитория
+
 ---
+
+📂 Структура репозитория
+
+```
 containers09/
 ├── site/
 │   ├── index.html
@@ -33,7 +37,7 @@ containers09/
 ├── Dockerfile.alpine
 ├── Dockerfile.min
 └── README.md
----
+```
 
 ## Ход выполнения
 
