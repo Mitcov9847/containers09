@@ -22,9 +22,8 @@
 ---
 
 📂 Структура репозитория
-arduino
-Копировать
-Редактировать
+
+---
 containers09/
 ├── site/
 │   ├── index.html
@@ -36,6 +35,7 @@ containers09/
 ├── Dockerfile.min
 └── README.md
 
+---
 ## Ход выполнения
 
 ### Шаг 1. Исходный образ — `mynginx:raw`
