@@ -1,0 +1,7 @@
+mynginx:raw 270MB 
+mynginx:clean 240MB 
+mynginx:few 186MB 
+mynginx:alpine 19.5MB 
+mynginx:repack 212MB 
+mynginx:minx 14.4MB   
+mynginx:min 14.3MB  
